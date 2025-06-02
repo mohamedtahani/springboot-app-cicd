@@ -1,0 +1,12 @@
+# Terraform state & crash logs
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+
+# Secrets and overrides
+*.tfvars
+*.tfvars.json
+
+# OS-specific
+.DS_Store
