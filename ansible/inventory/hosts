@@ -1,0 +1,14 @@
+[jenkins]
+jenkins ansible_host=18.205.246.80
+
+[sonarqube]
+sonarqube ansible_host=3.82.51.25
+
+[jenkins:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/jenkins-ssh.pem
+
+
+[sonarqube:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/jenkins-ssh.pem

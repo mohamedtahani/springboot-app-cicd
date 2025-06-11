@@ -1,12 +1,24 @@
-# Terraform state & crash logs
+# Terraform
 *.tfstate
 *.tfstate.*
 .terraform/
-crash.log
+.crash
+*.backup
+.terraform.lock.hcl
 
-# Secrets and overrides
-*.tfvars
-*.tfvars.json
+# Ansible
+*.retry
+*.log
+inventory/hosts  # optional if you'll template this per env
+*.pem
+*.ppk
 
-# OS-specific
+# OS/Editor
 .DS_Store
+*.swp
+.vscode/
+.idea/
+
+# SSH keys (NEVER commit!)
+**/*.pem
+**/*.ppk

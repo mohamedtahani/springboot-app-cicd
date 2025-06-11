@@ -1,0 +1,5 @@
+vpc_id        = "vpc-03e2119d66958e2e7"                    
+subnet_id     = "subnet-0275513597a98db63"                
+instance_type = "t2.medium"                      
+ami_id        = "ami-0731becbf832f281e"                   
+key_name      = "jenkins-ssh"                   

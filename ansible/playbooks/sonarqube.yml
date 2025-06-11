@@ -1,0 +1,9 @@
+---
+
+- name: Install SonarQube
+  hosts: sonarqube
+  become: true
+
+  roles:
+    - ../roles/docker
+    - ../roles/sonar

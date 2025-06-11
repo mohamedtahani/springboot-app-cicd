@@ -1,0 +1,37 @@
+---
+- name: Download Jenkins GPG key
+  get_url:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    dest: /usr/share/keyrings/jenkins-keyring.asc
+    mode: '0644'
+
+- name: Add Jenkins APT repository
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
+    state: present
+    filename: jenkins
+
+- name : Installing Java and Jenkins
+  ansible.builtin.apt:
+    name:
+      - openjdk-17-jdk
+      - jenkins
+    state: present
+    update_cache: yes
+
+- name : Starting Jenkins service
+  ansible.builtin.systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+
+- name: add jenkins user to docker group
+  ansible.builtin.user:
+    name: jenkins
+    group: docker
+    append: yes
+
+- name: Install Maven (for Java builds)
+  apt:
+    name: maven
+    state: present

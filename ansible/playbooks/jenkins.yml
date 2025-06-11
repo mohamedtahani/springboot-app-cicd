@@ -1,0 +1,9 @@
+---
+
+- name: Provision Jenkins
+  hosts: jenkins 
+  become: true
+  
+  roles:
+    - ../roles/jenkins
+    - ../roles/docker
