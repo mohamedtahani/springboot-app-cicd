@@ -30,11 +30,6 @@
     state: present
     update_cache: yes
 
-- name: add jenkins user to docker group
-  ansible.builtin.user:
-    name: jenkins
-    group: docker
-    append: yes
 
 
 - name: Download Docker Compose binary
