@@ -3,7 +3,8 @@ pipeline {
 
     environment {
         SONAR_TOKEN = credentials('sonartoken')
-        SONAR_HOST_URL = 'http://54.164.105.9:9000'
+        SONAR_HOST_URL = 'http://54.242.133.29:9000'
+        scannerHome = tool 'sonarscanner'
     }
 
     tools {
