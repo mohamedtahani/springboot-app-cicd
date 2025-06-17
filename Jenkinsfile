@@ -13,20 +13,29 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Clone Repository') {
             steps {
                 git branch: 'main', credentialsId: 'github-cred', url: 'git@github.com:mohamedtahani/springboot-app-cicd.git'
             }
         }
 
-        stage('Build + Test + Checkstyle') {
+        stage('Build and Unit Tests') {
             steps {
-                sh 'mvn clean verify checkstyle:check -f backend/pom.xml'
+                echo "Running Maven build and tests..."
+                sh 'mvn clean verify -f backend/pom.xml'
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('Static Code Analysis - Checkstyle') {
             steps {
+                echo "Running Checkstyle..."
+                sh 'mvn checkstyle:check -f backend/pom.xml'
+            }
+        }
+
+        stage('Static Code Analysis - SonarQube') {
+            steps {
+                echo "Sending to SonarQube..."
                 withSonarQubeEnv('sonarqube-server') {
                     sh """
                         mvn sonar:sonar \
@@ -41,6 +50,7 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
+                echo "Waiting for SonarQube Quality Gate..."
                 timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
@@ -50,10 +60,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Code analysis passed!"
+            echo "Code passed all checks"
         }
         failure {
-            echo "❌ Pipeline failed during build or analysis"
+            echo "Pipeline failed. Check logs for the failing stage."
         }
     }
 }
