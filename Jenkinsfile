@@ -15,7 +15,8 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git branch: 'main', git credentialsId: 'github-cred', url: 'git@github.com:mohamedtahani/springboot-app-cicd.git'
+                git branch: 'main', credentialsId: 'github-cred', url: 'git@github.com:mohamedtahani/springboot-app-cicd.git'
+
             }
         }
 
