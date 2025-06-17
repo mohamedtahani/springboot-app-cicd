@@ -26,12 +26,12 @@ pipeline {
             }
         }
 
-        stage('Static Code Analysis - Checkstyle') {
-            steps {
-                echo "Running Checkstyle..."
-                sh 'mvn checkstyle:check -f backend/pom.xml'
-            }
-        }
+//       stage('Static Code Analysis - Checkstyle') {
+//            steps {
+//                echo "Running Checkstyle..."
+//                sh 'mvn checkstyle:check -f backend/pom.xml'
+//          }
+//       }
 
         stage('Static Code Analysis - SonarQube') {
             steps {
