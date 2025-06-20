@@ -3,8 +3,11 @@ pipeline {
 
     environment {
         SONAR_TOKEN = credentials('sonartoken')
-        SONAR_HOST_URL = 'http://54.242.133.29:9000'
         scannerHome = tool 'sonarscanner'
+
+        AWS_REGION = 'us-east-1'
+        BACKEND_ECR = '890742564895.dkr.ecr.us-east-1.amazonaws.com/springboot-backend'
+        FRONTEND_ECR = '890742564895.dkr.ecr.us-east-1.amazonaws.com/springboot-frontend'
     }
 
     tools {
@@ -26,13 +29,6 @@ pipeline {
             }
         }
 
-//       stage('Static Code Analysis - Checkstyle') {
-//            steps {
-//                echo "Running Checkstyle..."
-//                sh 'mvn checkstyle:check -f backend/pom.xml'
-//          }
-//       }
-
         stage('Static Code Analysis - SonarQube') {
             steps {
                 echo "Sending to SonarQube..."
@@ -40,7 +36,6 @@ pipeline {
                     sh """
                         mvn sonar:sonar \
                           -Dsonar.projectKey=devops-app \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
                           -Dsonar.login=$SONAR_TOKEN \
                           -f backend/pom.xml
                     """
@@ -56,14 +51,35 @@ pipeline {
                 }
             }
         }
+
+        stage('Build & Push Docker Images to ECR') {
+            steps {
+                echo "Building and pushing Docker images to ECR..."
+                sh """
+                    aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $BACKEND_ECR
+                    aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $FRONTEND_ECR
+
+                    docker compose -f docker-compose.yml build
+
+                    docker tag backend $BACKEND_ECR:latest
+                    docker tag frontend $FRONTEND_ECR:latest
+
+                    docker push $BACKEND_ECR:latest
+                    docker push $FRONTEND_ECR:latest
+
+                    docker image rm $BACKEND_ECR:latest
+                    docker image rm $FRONTEND_ECR:latest
+                """
+            }
+        }
     }
 
     post {
         success {
-            echo "Code passed all checks"
+            echo "Pipeline completed successfully!"
         }
         failure {
-            echo "Pipeline failed. Check logs for the failing stage."
+            echo "Pipeline failed. Review logs for more details."
         }
     }
 }

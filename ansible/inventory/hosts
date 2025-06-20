@@ -1,5 +1,5 @@
 [jenkins]
-jenkins ansible_host=13.220.56.62
+jenkins ansible_host=98.81.212.225
 
 [sonarqube]
 sonarqube ansible_host=3.82.51.25
