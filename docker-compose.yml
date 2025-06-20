@@ -2,9 +2,8 @@ version: '3.8'
 
 services:
   backend:
-    build:
-      context: ./backend
     image: backend
+    build: ./backend
     ports:
       - "8080:8080"
     environment:
@@ -14,19 +13,16 @@ services:
         condition: service_healthy
     networks:
       - devnet
-    
 
   frontend:
-    build:
-      context: ./frontend
     image: frontend
+    build: ./frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
     networks:
       - devnet
-  
 
   mysql:
     image: mysql:8.0
@@ -49,6 +45,6 @@ services:
 volumes:
   mysql_data:
 
-networks: 
+networks:
   devnet:
     driver: bridge
