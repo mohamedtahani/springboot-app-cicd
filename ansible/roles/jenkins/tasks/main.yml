@@ -8,7 +8,6 @@
     state: present
     update_cache: yes
 
-
 - name: Download Jenkins GPG key
   get_url:
     url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
@@ -21,7 +20,7 @@
     state: present
     filename: jenkins
 
-- name : Installing Java and Jenkins
+- name: Installing Java and Jenkins
   ansible.builtin.apt:
     name:
       - openjdk-11-jdk
@@ -30,13 +29,13 @@
     state: present
     update_cache: yes
 
-- name : Starting Jenkins service
+- name: Start Jenkins service
   ansible.builtin.systemd:
     name: jenkins
     state: started
     enabled: yes
 
-- name: add jenkins user to docker group
+- name: Add Jenkins user to Docker group
   ansible.builtin.user:
     name: jenkins
     group: docker
@@ -46,8 +45,6 @@
   apt:
     name: maven
     state: present
-
-
 
 - name: Download AWS CLI v2 bundle
   get_url:
@@ -74,4 +71,13 @@
   debug:
     msg: "Installed AWS CLI version: {{ aws_cli_version.stdout }}"
 
-  
+
+- name: Restart Docker to apply group changes
+  ansible.builtin.systemd:
+    name: docker
+    state: restarted
+
+- name: Restart Jenkins to refresh group membership
+  ansible.builtin.systemd:
+    name: jenkins
+    state: restarted

@@ -61,26 +61,33 @@ pipeline {
 }
 
 
-        stage('Build & Push Docker Images to ECR') {
-            steps {
-                echo "Building and pushing Docker images to ECR..."
-                sh """
-                    aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $BACKEND_ECR
-                    aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $FRONTEND_ECR
+       stage('Build & Push Docker Images to ECR') {
+         steps {
+            echo "Cleaning Docker and building images..."
+            sh '''
+                docker system prune -af
+                docker builder prune -af
 
-                    docker compose -f docker-compose.yml build
+                aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $BACKEND_ECR
+                aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $FRONTEND_ECR
 
-                    docker tag backend $BACKEND_ECR:latest
-                    docker tag frontend $FRONTEND_ECR:latest
+                docker compose -f docker-compose.yml build
 
-                    docker push $BACKEND_ECR:latest
-                    docker push $FRONTEND_ECR:latest
+                docker tag backend $BACKEND_ECR:latest
+                docker tag frontend $FRONTEND_ECR:latest
 
-                    docker image rm $BACKEND_ECR:latest
-                    docker image rm $FRONTEND_ECR:latest
-                """
-            }
+                docker push $BACKEND_ECR:latest
+                docker push $FRONTEND_ECR:latest
+
+                docker image rm $BACKEND_ECR:latest
+                docker image rm $FRONTEND_ECR:latest
+
+                docker system prune -af
+                docker builder prune -af
+            '''
         }
+        }
+
     }
 
     post {
