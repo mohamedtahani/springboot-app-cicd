@@ -51,6 +51,15 @@ pipeline {
                 }
             }
         }
+        stage('Check Docker Access') {
+             steps {
+                sh 'id jenkins'              // prints the user & group
+                sh 'groups jenkins'          // should show docker
+                sh 'ls -l /var/run/docker.sock'
+                sh 'docker ps'               // should list containers or never error
+        }
+}
+
 
         stage('Build & Push Docker Images to ECR') {
             steps {
