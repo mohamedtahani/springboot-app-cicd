@@ -71,7 +71,7 @@ pipeline {
                 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $BACKEND_ECR
                 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $FRONTEND_ECR
 
-                docker compose -f docker-compose.yml build
+                docker compose -f docker-compose.yml build --no-cache
 
                 docker tag backend $BACKEND_ECR:latest
                 docker tag frontend $FRONTEND_ECR:latest
